@@ -1,0 +1,389 @@
+import './App.css';
+import Blog from './components/Blog';
+
+function App() {
+  let data=[
+    {name:"Name",title:"Title",salary:"Salary",age:"Age"},
+    // ["Name","Title","Salary","Age"],
+    ["Raj","CEO","250000","29"],
+    ["Sham","Manager","350000","30"],
+    ["Ram","CFO","450000","39"],
+  ]
+  // 33 203 cabin 6
+
+  return (
+    <div className="App">
+      {/* <Blog fname="Lohith" salary={50000}/>
+      <Blog fname="Rohith"/> */}
+
+      <table>
+        <tr>
+          <th>{data[0].name}</th>
+          <th>{data[0].title}</th>
+          <th>{data[0].salary}</th>
+          <th>{data[0].age}</th>       
+        </tr>
+        {data.slice(1).map((item) => {
+          return (
+            <tr>
+              {item.map((itemss) => {
+                return (
+                  <td>{itemss}</td>
+                );
+              })}
+            </tr>
+          );
+        })}
+
+      </table>
+
+      
+    </div>
+  );
+}
+
+export default App;
+
+
+Conditional Rendering
+import React from 'react'
+import Comp1 from './components/Comp1';
+import Comp2 from './components/Comp2';
+
+const App = () => {
+  var condition=true;
+  return (
+    <div>
+      {condition==true && <Comp1/>} 
+      {condition==true ? <Comp1/> : <Comp2/>} 
+    </div>
+  )
+}
+
+export default App
+
+
+import React,{useState} from 'react'
+import Counter from './components/Counter';
+
+const App = () => {
+  const [bgColor,setBgColor]=useState('Yellow');
+  return (
+    <div style={{backgroundColor:bgColor}}>
+      <Counter/>
+      <button onClick={()=>setBgColor("Red")}>Red</button>
+      <button onClick={()=>setBgColor("Orange")}>Orange</button>
+      <button onClick={()=>setBgColor("Green")}>Green</button>
+      <button onClick={()=>setBgColor("Blue")}>Blue</button>
+    </div>
+  )
+}
+
+export default App
+
+
+Light and Dark mode toggle code
+
+import React,{useState} from 'react'
+
+const App = () => {
+  const [theme,setTheme]=useState('light');
+  function changeTheme(){
+    setTheme(prevtheme=>{
+      if(prevtheme==='light'){
+        return 'Dark';
+      }else{
+        return 'Light';
+      }
+    })
+  }
+
+
+  return (
+    <div style={{backgroundColor:theme==='light'?'white':'black',color:theme==='light'?'black':'white'}}>
+      <button onClick={changeTheme}>{theme} Theme</button>
+      <p>loremibibfabibfiabfbaif foanfiafbba
+      </p>
+    </div>
+  )
+}
+
+export default App
+
+
+
+Controlled Forms
+import React, { useState } from 'react'
+
+const ControlledForms = () => {
+    const [name,setName]=useState("");
+    const [email,setEmail]=useState("");
+    const [pass,setPass]=useState("");
+    const [condition,setCondition]=useState(false);
+
+    function handleSubmit(e){
+        e.preventDefault();
+        setCondition(true);
+
+    }
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input type='text' placeholder='Enter Username'value={name} onChange={(event)=>{setName(event.target.value)}}/><br/><br/>
+        <input type='email' placeholder='Enter Email' value={email} onChange={(e)=>{setEmail(e.target.value)}}/><br/><br/>
+        <input type='password' placeholder='Enter PassWord' value={pass} onChange={(e)=>{setPass(e.target.value)}}/><br/><br/>
+        <input type='submit' value="Create"/>
+        
+
+        {condition && (
+        <div>
+        <h1>My Name is {name}</h1>
+        <h1>My Email is {email}</h1>
+        <h1>My PassWord is {pass}</h1>
+        </div>)}
+      </form>
+    </div>
+  )
+}
+
+export default ControlledForms
+
+
+
+import React, { useState } from 'react'
+
+const ControlledForms = () => {
+    const [data,setData]=useState({
+        name:"",
+        email:"",
+        pass:""
+    })
+    const [condition,setCondition]=useState(false);
+
+    function handleSubmit(e){
+        e.preventDefault();
+        setCondition(true);
+
+    }
+  return (
+    <div>
+      <form onSubmit={handleSubmit}>
+        <input type='text' placeholder='Enter Username' value={data.name} onChange={(e)=>{setData({...data, name: e.target.value})}}/><br/><br/>
+        <input type='email' placeholder='Enter Email' value={data.email} onChange={(e)=>{setData({...data, email: e.target.value})}}/><br/><br/>
+        <input type='password' placeholder='Enter PassWord' value={data.pass} onChange={(e)=>{setData({...data, pass: e.target.value})}}/><br/><br/>
+        <input type='submit' value="Create"/>
+
+        {condition && data.name}<br/>
+        {condition && data.email}<br/>
+        {condition && data.pass}<br/>
+      </form>
+    </div>
+  )
+}
+
+export default ControlledForms
+
+
+import React from 'react'
+import ControlledForms from './components/ControlledForms'
+
+const App = () => {
+  return (
+    <div>
+      <ControlledForms/>
+    </div>
+  )
+}
+
+export default App
+
+
+
+
+
+import React, { useState } from 'react'
+import { useEffect } from 'react';
+
+const App = () => {
+  const [articles, setArticles] = useState([]);
+  const [query, setQuery] = useState('');
+  useEffect(() => {
+    setQuery('india');
+    fetchNews('india');
+    setQuery('');
+  }, []);
+
+
+  const fetchNews = async (searchQuery) => {
+      const response = await fetch(`https://newsapi.org/v2/everything?q=${searchQuery}&from=2024-12-24&sortBy=publishedAt&apiKey=8f22dca486a0433ba2c2163a9fa2d3c5`);
+      const data = await response.json();
+      setArticles(data.articles);  
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchNews(query);
+  };
+
+  return (
+    <div>
+      <form onSubmit={handleSearch}>
+        <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search for news"/>
+        <button type="submit">Search</button>
+      </form>
+      <div>
+        {articles.map((article, index) => (
+          <div key={index}>
+            <h2>{article.title}</h2>
+            <p>{article.description}</p>
+            <img src={article.urlToImage} alt={article.title} width='150px' height='150px' /> <br/>
+            <a href={article.url} target="_blank" rel="noopener noreferrer">Read more</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default App;
+
+
+
+
+
+
+
+
+
+
+
+import React, { useState, useEffect } from 'react'
+
+const App = () => {
+  const [count,setCount]=useState(0);
+  const [number,setNumber]=useState(10000);
+  useEffect(()=>{
+    const time= setInterval(()=>{
+      console.log("Lohith");
+    },3000);
+
+    return()=>{
+      clearInterval(time);
+    }
+  })
+  return (
+    <div>
+      <h1>
+       Count: {count}
+      </h1>
+      <button onClick={()=>setCount(count+1)}>Add</button>
+      <h1>Number: {number}</h1>
+      <button onClick={()=>{setNumber(number+1)}}>+++++</button>
+    </div>
+  )
+}
+
+export default App
+
+
+
+
+
+
+
+import React, { useReducer } from 'react'
+function reducer(state,action){
+  if(action.change==="update"){
+    return {...state,[action.type]:action.value}
+  }
+}
+
+
+const App = () => {
+  const [state, dispatch] = useReducer(reducer, {name:"",email:"",pass:"",show:false});
+
+  const handleSubmit=(e)=>{
+    e.preventDefault();
+    dispatch({change:"update",type:"show",value:true})
+  }
+  return (
+    <div>
+     <form onSubmit={handleSubmit}>
+      <input type='text' value={state.name} placeholder='Enter your name' onChange={(e)=>{dispatch({change:"update",type:"name",value:(e.target.value)})}}/>
+      <input type='email' value={state.email} placeholder='Enter your email' onChange={(e)=>{dispatch({change:"update",type:"email", value:(e.target.value)})}}/>
+      <input type='password' value={state.pass} placeholder='Enter your password' onChange={(e)=>{dispatch({change:"update",type:"pass" , value:(e.target.value)})}}/>
+      <button type='submit'>Submit</button><br/>
+      {state.show && <>Your Name:{state.name}</>}<br/>
+      {state.show && <>Your Email:{state.email}</>}<br/>
+      {state.show && <>Your Pass:{state.pass}</>}<br/>
+     </form>
+      
+    </div>
+  )
+}
+
+export default App
+
+
+
+
+
+
+
+
+
+
+import React, { useState } from 'react'
+import {BrowserRouter,Route,Routes} from 'react-router-dom'
+import Home from './components/Home'
+import About from './components/About'
+import Navbar from './components/Navbar'
+import User from './components/User'
+
+const App = () => {
+  const [count,setCount]=useState(0);
+  
+  return (
+    <div>
+      <h1>Count :{count}</h1>
+      <button onClick={()=>setCount(count+1)}>Increase</button>
+      <BrowserRouter>
+          <Navbar/>
+        <Routes>
+          <Route path='/' element={<Home/>} />
+          <Route path='/about' element={<About/>}/>
+          <Route path='/contact' element={<User/>}/>
+          <Route path='/user' element={<User/>}/>
+        </Routes>
+      
+      </BrowserRouter>
+    </div>
+  )
+}
+
+export default App
+
+
+
+
+
+
+
+
+
+import React from 'react'
+import Lohith from './components/CSS/Lohith'
+
+const App = () => {
+  return (
+    <div>
+      <Lohith/>
+    </div>
+  )
+}
+
+export default App
+
+
+
+
